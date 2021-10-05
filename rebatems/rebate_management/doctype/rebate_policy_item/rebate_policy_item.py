@@ -4,5 +4,5 @@
 # import frappe
 from frappe.model.document import Document
 
-class RebateItem(Document):
+class RebatePolicyItem(Document):
 	pass

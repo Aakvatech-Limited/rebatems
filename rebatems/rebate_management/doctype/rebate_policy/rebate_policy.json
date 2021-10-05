@@ -11,17 +11,24 @@
   "description",
   "column_break_4",
   "company",
-  "expense_account",
+  "rebate_account",
+  "create_lsv",
+  "rebate_status",
   "section_break_4",
   "type",
   "supplier",
   "start_date",
   "end_date",
   "column_break_5",
+  "rebate_frequency",
   "target_qty",
   "supplier_currency",
   "rebate_per_qty",
   "section_break_10",
+  "items",
+  "section_break_20",
+  "credit_note_journal_entry",
+  "column_break_22",
   "amended_from"
  ],
  "fields": [
@@ -116,23 +123,69 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "expense_account",
+   "fieldname": "target_qty",
+   "fieldtype": "Float",
+   "label": "Target Qty",
+   "reqd": 1
+  },
+  {
+   "default": "Setup",
+   "fieldname": "rebate_status",
+   "fieldtype": "Select",
+   "label": "Rebate Status",
+   "options": "Setup\nRunning\nAchieved\nCompleted\nMissed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rebate_account",
    "fieldtype": "Link",
-   "label": "Expense Account",
+   "label": "Rebate Account",
    "options": "Account",
    "reqd": 1
   },
   {
-   "fieldname": "target_qty",
-   "fieldtype": "Float",
-   "label": "Target Qty",
+   "allow_on_submit": 1,
+   "fieldname": "credit_note_journal_entry",
+   "fieldtype": "Link",
+   "label": "Credit Note Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "rebate_frequency",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Rebate Frequency",
+   "options": "Monthly\nQuarterly\nHalf Yearly\nYearly",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "Create Landed Cost Voucher",
+   "fieldname": "create_lsv",
+   "fieldtype": "Check",
+   "label": "Create LSV"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Rebate Policy Item",
+   "options": "Rebate Policy Item",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-25 16:18:23.376426",
+ "modified": "2021-10-06 00:23:52.441265",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy",
