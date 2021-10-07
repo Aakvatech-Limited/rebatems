@@ -24,10 +24,16 @@
   "target_qty",
   "supplier_currency",
   "rebate_per_qty",
+  "section_break_30",
+  "total_qty_achieved",
+  "total_amount",
+  "column_break_32",
+  "percentage",
   "section_break_10",
   "items",
   "section_break_20",
   "credit_note_journal_entry",
+  "voucher",
   "column_break_22",
   "amended_from"
  ],
@@ -60,10 +66,11 @@
    "reqd": 1
   },
   {
+   "default": "Purchase",
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Sales\nPurchase\nPromotional Sales",
+   "options": "Purchase\nSales\nPromotional Sales",
    "reqd": 1
   },
   {
@@ -169,6 +176,7 @@
   },
   {
    "default": "1",
+   "depends_on": "eval:doc.type == \"Purchase\"",
    "description": "Create Landed Cost Voucher",
    "fieldname": "create_lsv",
    "fieldtype": "Check",
@@ -180,12 +188,50 @@
    "label": "Rebate Policy Item",
    "options": "Rebate Policy Item",
    "reqd": 1
+  },
+  {
+   "fieldname": "total_qty_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total QTY Achieved",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "percentage",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Achieved Percentage",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "voucher",
+   "fieldtype": "Link",
+   "label": "Landed Cost Voucher",
+   "options": "Landed Cost Voucher",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-06 00:23:52.441265",
+ "modified": "2021-10-08 02:08:19.045157",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy",

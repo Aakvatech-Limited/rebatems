@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "item",
-  "uom"
+  "uom",
+  "qty_achieved"
  ],
  "fields": [
   {
@@ -25,12 +26,20 @@
    "label": "UOM",
    "options": "UOM",
    "read_only": 1
+  },
+  {
+   "fieldname": "qty_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": " QTY Achieved",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-06 00:22:01.075054",
+ "modified": "2021-10-07 22:43:52.854619",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy Item",
