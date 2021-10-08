@@ -11,6 +11,7 @@ class RebatePolicy(Document):
         self.total_qty_achieved = 0
         for item in self.items:
             self.total_qty_achieved += item.qty_achieved
+        self.percentage = self.total_qty_achieved / self.target_qty * 100
 
     def before_submit(self):
         pass
@@ -44,13 +45,17 @@ def process_rebate(reb_name, now_date=None):
         or doc.rebate_status in ["Completed", "Missed"]
     ):
         return
-    if doc.type == "Purchase":
-        process_purchase_rebate(doc)
-    elif doc.type == "Sales":
-        process_sales_rebate(doc)
-    elif doc.type == "Promotional Sales":
-        process_promotional_rebate(doc)
-    frappe.db.commit()
+    try:
+        if doc.type == "Purchase":
+            process_purchase_rebate(doc)
+        elif doc.type == "Sales":
+            process_sales_rebate(doc)
+        elif doc.type == "Promotional Sales":
+            process_promotional_rebate(doc)
+        frappe.db.commit()
+    except Exception as e:
+        frappe.msgprint(str(e))
+        frappe.log_error(frappe.get_traceback(), str(e))
 
 
 def process_purchase_rebate(doc):

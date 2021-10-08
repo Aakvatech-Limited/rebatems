@@ -9,7 +9,7 @@
   "naming_series",
   "rebate_name",
   "description",
-  "rebate_status",
+  "status",
   "column_break_4",
   "company",
   "cost_center",
@@ -50,6 +50,7 @@
    "fieldname": "supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Supplier",
    "options": "Supplier",
    "reqd": 1
@@ -57,12 +58,14 @@
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
+   "in_standard_filter": 1,
    "label": "Start Date",
    "reqd": 1
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
+   "in_standard_filter": 1,
    "label": "End Date",
    "reqd": 1
   },
@@ -70,6 +73,7 @@
    "default": "Purchase",
    "fieldname": "type",
    "fieldtype": "Select",
+   "in_standard_filter": 1,
    "label": "Type",
    "options": "Purchase\nSales\nPromotional Sales",
    "reqd": 1
@@ -137,14 +141,6 @@
    "reqd": 1
   },
   {
-   "default": "Setup",
-   "fieldname": "rebate_status",
-   "fieldtype": "Select",
-   "label": "Rebate Status",
-   "options": "Setup\nRunning\nAchieved\nCompleted\nMissed",
-   "reqd": 1
-  },
-  {
    "fieldname": "rebate_account",
    "fieldtype": "Link",
    "label": "Rebate Account",
@@ -205,7 +201,6 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
    "label": "Total Amount",
    "read_only": 1
   },
@@ -215,7 +210,7 @@
   },
   {
    "fieldname": "percentage",
-   "fieldtype": "Float",
+   "fieldtype": "Percent",
    "in_list_view": 1,
    "label": "Achieved Percentage",
    "non_negative": 1,
@@ -234,12 +229,22 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "reqd": 1
+  },
+  {
+   "default": "Setup",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rebate Status",
+   "options": "Setup\nRunning\nAchieved\nCompleted\nMissed",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-08 14:37:02.618677",
+ "modified": "2021-10-08 16:58:48.147216",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy",
