@@ -4,9 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import nowdate
-
-# from console import console
+from frappe.utils import nowdate, add_days
 
 
 class RebatePolicy(Document):
@@ -42,12 +40,18 @@ class RebatePolicy(Document):
         return [i.item for i in self.items]
 
     def update_status(self):
+        if self.status in ["Completed", "Missed"]:
+            return
         now_date = nowdate()
-        if str(self.start_date) > now_date:
+        if str(self.start_date) > now_date and self.status != "Setup":
             self.status = "Setup"
-        elif str(self.start_date) <= now_date and now_date <= str(self.end_date):
+        elif (
+            str(self.start_date) <= now_date
+            and now_date <= str(self.end_date)
+            and self.status != "Running"
+        ):
             self.status = "Running"
-        elif str(self.end_date) > now_date:
+        if str(self.end_date) < now_date:
             if self.total_qty_achieved >= self.target_qty:
                 if self.voucher:
                     self.status = "Completed"
@@ -89,7 +93,6 @@ class RebatePolicy(Document):
                 "Account", self.rebate_account, "account_currency"
             )
             expense.exchange_rate = 1
-            console(voucher.__dict__).info()
             voucher.insert(ignore_permissions=True, ignore_mandatory=True)
             self.voucher = voucher.name
             frappe.msgprint(
@@ -103,8 +106,9 @@ def process_rebates():
     rebates_list = frappe.get_all(
         "Rebate Policy",
         filters={
+            "docstatus": 0,
             "start_date": ["<=", now_date],
-            "end_date": [">=", now_date],
+            "end_date": [">=", add_days(now_date, -1)],
             "rebate_status": ["not in", ["Completed", "Missed"]],
         },
     )
@@ -117,6 +121,9 @@ def process_rebate(reb_name, now_date=None):
     if not now_date:
         now_date = nowdate()
     doc = frappe.get_doc("Rebate Policy", reb_name)
+    if str(doc.end_date) < now_date:
+        doc.update_status()
+        doc.save()
     if (
         str(doc.start_date) > now_date
         or str(doc.end_date) < now_date
