@@ -11,7 +11,6 @@ class RebatePolicy(Document):
     def validate(self):
         self.update_totals()
         self.update_status()
-        # self.create_voucher()
 
     def before_submit(self):
         now_date = nowdate()
