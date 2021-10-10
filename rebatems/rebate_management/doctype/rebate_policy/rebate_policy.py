@@ -2,22 +2,100 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from frappe.utils import nowdate
+
+# from console import console
 
 
 class RebatePolicy(Document):
     def validate(self):
+        self.update_totals()
+        self.update_status()
+        # self.create_voucher()
+
+    def before_submit(self):
+        now_date = nowdate()
+        if str(self.end_date) < now_date:
+            frappe.throw(_("Not allowed before the period ends"))
+        if self.status not in ["Achieved", "Missed"]:
+            frappe.throw(
+                _(
+                    "Submition can only be done when the status is 'Missed' or 'Achieved'"
+                )
+            )
+        self.create_voucher()
+
+    def on_submit(self):
+        pass
+
+    def update_totals(self):
         self.total_qty_achieved = 0
         for item in self.items:
             self.total_qty_achieved += item.qty_achieved
         self.percentage = self.total_qty_achieved / self.target_qty * 100
+        self.total_amount = self.total_qty_achieved * self.rebate_per_qty
 
-    def before_submit(self):
-        pass
+    @property
+    def accepted_items(self):
+        return [i.item for i in self.items]
 
-    def on_submit(self):
-        pass
+    def update_status(self):
+        now_date = nowdate()
+        if str(self.start_date) > now_date:
+            self.status = "Setup"
+        elif str(self.start_date) <= now_date and now_date <= str(self.end_date):
+            self.status = "Running"
+        elif str(self.end_date) > now_date:
+            if self.total_qty_achieved >= self.target_qty:
+                if self.voucher:
+                    self.status = "Completed"
+                else:
+                    self.status = "Achieved"
+            else:
+                self.status = "Missed"
+
+    def create_voucher(self):
+        now_date = nowdate()
+        if (
+            self.docstatus == 0
+            # and self.status == "Achieved"
+            and self.type == "Purchase"
+            and self.create_lsv
+        ):
+            purchase_receipts, items_totals = get_purchases_for_rebate(self)
+            voucher = frappe.new_doc("Landed Cost Voucher")
+            voucher.company = self.company
+            voucher.posting_date = now_date
+            voucher.purchase_receipts = []
+            for purcahse in purchase_receipts:
+                row = voucher.append("purchase_receipts", {})
+                row.update(purcahse)
+            voucher.distribute_charges_based_on = "Qty"
+            voucher.total_taxes_and_charges = self.total_amount * -1
+            voucher.get_items_from_purchase_receipts()
+            items = []
+            for item in voucher.items:
+                if item.item_code in self.accepted_items:
+                    items.append(item)
+            voucher.items = items
+            voucher.taxes = []
+            expense = voucher.append("taxes")
+            expense.amount = self.total_amount * -1
+            expense.expense_account = self.rebate_account
+            expense.description = self.rebate_name
+            expense.account_currency = frappe.get_value(
+                "Account", self.rebate_account, "account_currency"
+            )
+            expense.exchange_rate = 1
+            console(voucher.__dict__).info()
+            voucher.insert(ignore_permissions=True, ignore_mandatory=True)
+            self.voucher = voucher.name
+            frappe.msgprint(
+                _("Landed Cost Voucher {0} Created").format(self.voucher), alert=True
+            )
+            frappe.db.commit()
 
 
 def process_rebates():
@@ -59,18 +137,14 @@ def process_rebate(reb_name, now_date=None):
 
 
 def process_purchase_rebate(doc):
-    purchase_receipts, items_liens, items_totals = get_purchases_for_rebate(doc)
+    purchase_receipts, items_totals = get_purchases_for_rebate(doc)
     for item in doc.items:
         item.qty_achieved = items_totals.get(item.item)
     doc.save(ignore_permissions=True)
 
-    # print("purchase_receipts", purchase_receipts)
-    # print("items_liens", items_liens)
-    # print("items_totals", items_totals)
-
 
 def get_purchases_for_rebate(doc):
-    accepted_items = [i.item for i in doc.items]
+    accepted_items = doc.accepted_items
     purchase_receipts = []
     items_liens = []
     items_totals = frappe._dict()
@@ -130,7 +204,7 @@ def get_purchases_for_rebate(doc):
         items_totals.setdefault(item.item_code, 0)
         items_totals[item.item_code] += item.qty
 
-    return purchase_receipts, items_liens, items_totals
+    return purchase_receipts, items_totals
 
 
 def process_sales_rebate(doc):
