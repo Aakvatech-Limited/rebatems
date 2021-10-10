@@ -64,7 +64,7 @@ class RebatePolicy(Document):
         now_date = nowdate()
         if (
             self.docstatus == 0
-            # and self.status == "Achieved"
+            and self.status == "Achieved"
             and self.type == "Purchase"
             and self.create_lsv
         ):
