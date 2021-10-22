@@ -30,7 +30,7 @@ class RebatePolicy(Document):
     def update_totals(self):
         self.total_qty_achieved = 0
         for item in self.items:
-            self.total_qty_achieved += item.qty_achieved
+            self.total_qty_achieved += item.qty_achieved or 0
         self.percentage = self.total_qty_achieved / self.target_qty * 100
         self.total_amount = self.total_qty_achieved * self.rebate_per_qty
 
