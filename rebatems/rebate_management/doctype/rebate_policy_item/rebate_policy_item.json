@@ -7,7 +7,8 @@
  "field_order": [
   "item",
   "uom",
-  "qty_achieved"
+  "qty_achieved",
+  "amount_achieved"
  ],
  "fields": [
   {
@@ -32,6 +33,16 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": " QTY Achieved",
+   "no_copy": 1,
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Amount Achieved",
+   "no_copy": 1,
    "non_negative": 1,
    "read_only": 1
   }
@@ -39,7 +50,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-07 22:43:52.854619",
+ "modified": "2021-10-27 23:01:19.790265",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy Item",

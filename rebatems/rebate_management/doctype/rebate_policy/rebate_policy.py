@@ -29,10 +29,18 @@ class RebatePolicy(Document):
 
     def update_totals(self):
         self.total_qty_achieved = 0
+        self.total_amount_achieved = 0
         for item in self.items:
             self.total_qty_achieved += item.qty_achieved or 0
-        self.percentage = self.total_qty_achieved / self.target_qty * 100
-        self.total_amount = self.total_qty_achieved * self.rebate_per_qty
+            self.total_amount_achieved += item.amount_achieved or 0
+        if self.target_type == "Quantity":
+            self.percentage = self.total_qty_achieved / self.target_qty * 100
+            self.total_amount = self.total_qty_achieved * self.rebate_per_qty
+        elif self.target_type == "Amount":
+            self.percentage = self.total_amount_achieved / self.target_amount * 100
+            self.total_amount = (
+                self.total_amount_achieved * self.rebate_percentage / 100
+            )
 
     @property
     def accepted_items(self):
@@ -145,7 +153,10 @@ def process_rebate(reb_name, now_date=None):
 def process_purchase_rebate(doc):
     purchase_receipts, items_totals = get_purchases_for_rebate(doc)
     for item in doc.items:
-        item.qty_achieved = items_totals.get(item.item)
+        if items_totals.get(item.item):
+            totals = frappe._dict(items_totals.get(item.item))
+            item.qty_achieved = totals.qty
+            item.amount_achieved = totals.amount
     doc.save(ignore_permissions=True)
 
 
@@ -196,6 +207,7 @@ def get_purchases_for_rebate(doc):
                 item_dict.receipt_document_type = el.doctype
                 item_dict.receipt_document = el.name
                 item_dict.purchase_receipt_item = item.name
+                item_dict.base_net_amount = item.base_net_amount
                 items_liens.append(item_dict)
         if accepted:
             doc_dict = frappe._dict()
@@ -207,8 +219,9 @@ def get_purchases_for_rebate(doc):
             purchase_receipts.append(doc_dict)
 
     for item in items_liens:
-        items_totals.setdefault(item.item_code, 0)
-        items_totals[item.item_code] += item.qty
+        items_totals.setdefault(item.item_code, {"qty": 0, "amount": 0})
+        items_totals[item.item_code]["qty"] += item.qty
+        items_totals[item.item_code]["amount"] += item.base_net_amount
 
     return purchase_receipts, items_totals
 
