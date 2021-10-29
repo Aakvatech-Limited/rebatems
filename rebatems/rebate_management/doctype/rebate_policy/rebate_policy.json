@@ -14,7 +14,7 @@
   "company",
   "cost_center",
   "rebate_account",
-  "create_lsv",
+  "create_lcv",
   "section_break_4",
   "type",
   "supplier",
@@ -179,14 +179,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "1",
-   "depends_on": "eval:doc.type == \"Purchase\"",
-   "description": "Create Landed Cost Voucher",
-   "fieldname": "create_lsv",
-   "fieldtype": "Check",
-   "label": "Create LSV"
-  },
-  {
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Rebate Policy Items",
@@ -282,12 +274,20 @@
    "label": "Total Amount Achieved",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "default": "1",
+   "depends_on": "eval:doc.type == \"Purchase\"",
+   "description": "Create Landed Cost Voucher",
+   "fieldname": "create_lcv",
+   "fieldtype": "Check",
+   "label": "Create LCV"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-27 22:59:47.648642",
+ "modified": "2021-10-29 14:14:46.388987",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy",

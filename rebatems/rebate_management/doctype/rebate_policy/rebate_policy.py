@@ -81,7 +81,7 @@ class RebatePolicy(Document):
             self.docstatus == 0
             and self.status == "Achieved"
             and self.type == "Purchase"
-            and self.create_lsv
+            and self.create_lcv
         ):
             purchase_receipts, items_totals = get_purchases_for_rebate(self)
             voucher = frappe.new_doc("Landed Cost Voucher")
