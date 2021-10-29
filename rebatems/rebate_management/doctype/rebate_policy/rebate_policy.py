@@ -33,10 +33,18 @@ class RebatePolicy(Document):
         for item in self.items:
             self.total_qty_achieved += item.qty_achieved or 0
             self.total_amount_achieved += item.amount_achieved or 0
-        if self.target_type == "Quantity":
+        if (
+            self.target_type == "Quantity"
+            and self.total_qty_achieved
+            and self.target_qty
+        ):
             self.percentage = self.total_qty_achieved / self.target_qty * 100
             self.total_amount = self.total_qty_achieved * self.rebate_per_qty
-        elif self.target_type == "Amount":
+        elif (
+            self.target_type == "Amount"
+            and self.total_amount_achieved
+            and self.target_amount
+        ):
             self.percentage = self.total_amount_achieved / self.target_amount * 100
             self.total_amount = (
                 self.total_amount_achieved * self.rebate_percentage / 100
