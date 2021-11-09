@@ -44,7 +44,7 @@ app_license = "GPL"
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# 	"Role": "home_page"
 # }
 
 # Generators
@@ -94,29 +94,29 @@ app_license = "GPL"
 # 		"on_update": "method",
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
-#	}
+# 	}
 # }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"rebatems.tasks.all"
-# 	],
-# 	"daily": [
-# 		"rebatems.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"rebatems.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"rebatems.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"rebatems.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+    # "all": [
+    #     "rebatems.tasks.all"
+    # ],
+    # "daily": [
+    #     "rebatems.tasks.daily"
+    # ],
+    "hourly": [
+        "rebatems.rebate_management.doctype.rebate_policy.rebate_policy.process_rebates"
+    ],
+    # "weekly": [
+    #     "rebatems.tasks.weekly"
+    # ],
+    # "monthly": [
+    #     "rebatems.tasks.monthly"
+    # ]
+}
 
 # Testing
 # -------
@@ -146,24 +146,22 @@ app_license = "GPL"
 # --------------------
 
 user_data_fields = [
-	{
-		"doctype": "{doctype_1}",
-		"filter_by": "{filter_by}",
-		"redact_fields": ["{field_1}", "{field_2}"],
-		"partial": 1,
-	},
-	{
-		"doctype": "{doctype_2}",
-		"filter_by": "{filter_by}",
-		"partial": 1,
-	},
-	{
-		"doctype": "{doctype_3}",
-		"strict": False,
-	},
-	{
-		"doctype": "{doctype_4}"
-	}
+    {
+        "doctype": "{doctype_1}",
+        "filter_by": "{filter_by}",
+        "redact_fields": ["{field_1}", "{field_2}"],
+        "partial": 1,
+    },
+    {
+        "doctype": "{doctype_2}",
+        "filter_by": "{filter_by}",
+        "partial": 1,
+    },
+    {
+        "doctype": "{doctype_3}",
+        "strict": False,
+    },
+    {"doctype": "{doctype_4}"},
 ]
 
 # Authentication and authorization
@@ -172,4 +170,3 @@ user_data_fields = [
 # auth_hooks = [
 # 	"rebatems.auth.validate"
 # ]
-
