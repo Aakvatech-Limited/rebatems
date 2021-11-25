@@ -14,8 +14,8 @@ class RebatePolicy(Document):
 
     def before_submit(self):
         now_date = nowdate()
-        if str(self.end_date) < now_date:
-            frappe.throw(_("Not allowed before the period ends"))
+        if str(self.end_date) > now_date:
+            frappe.throw(_("Not allowed to Submit before the period ends"))
         if self.status not in ["Achieved", "Missed"]:
             frappe.throw(
                 _(
