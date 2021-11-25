@@ -67,7 +67,18 @@ class RebatePolicy(Document):
         ):
             self.status = "Running"
         if str(self.end_date) < now_date:
-            if self.total_qty_achieved >= self.target_qty:
+            if (
+                self.target_type == "Quantity"
+                and self.total_qty_achieved >= self.target_qty
+            ):
+                if self.voucher:
+                    self.status = "Completed"
+                else:
+                    self.status = "Achieved"
+            elif (
+                self.target_type == "Amount"
+                and self.total_amount_achieved >= self.target_amount
+            ):
                 if self.voucher:
                     self.status = "Completed"
                 else:
