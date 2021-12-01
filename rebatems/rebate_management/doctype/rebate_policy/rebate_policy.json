@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_auto_repeat": 1,
  "autoname": "naming_series:",
  "creation": "2021-09-25 15:57:55.286783",
  "doctype": "DocType",
@@ -147,11 +148,14 @@
    "mandatory_depends_on": "eval:doc.target_type == \"Quantity\""
   },
   {
+   "depends_on": "company",
+   "fetch_from": "company.default_rebate_account",
+   "fetch_if_empty": 1,
    "fieldname": "rebate_account",
    "fieldtype": "Link",
    "label": "Rebate Account",
-   "options": "Account",
-   "reqd": 1
+   "mandatory_depends_on": "company",
+   "options": "Account"
   },
   {
    "allow_on_submit": 1,
@@ -227,6 +231,8 @@
    "read_only": 1
   },
   {
+   "fetch_from": "company.cost_center",
+   "fetch_if_empty": 1,
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -287,7 +293,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-29 14:14:46.388987",
+ "modified": "2021-12-01 12:11:09.425507",
  "modified_by": "Administrator",
  "module": "Rebate Management",
  "name": "Rebate Policy",
