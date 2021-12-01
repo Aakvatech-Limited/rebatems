@@ -9,6 +9,8 @@ from frappe.utils import nowdate, add_days
 
 class RebatePolicy(Document):
     def validate(self):
+        if self.start_date >= self.end_date:
+            frappe.throw(_("The start date cannot be equal to or less than the end date"))
         self.update_totals()
         self.update_status()
 
