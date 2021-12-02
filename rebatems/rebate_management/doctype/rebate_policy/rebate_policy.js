@@ -18,5 +18,11 @@ frappe.ui.form.on('Rebate Policy', {
 				}
 			};
 		});
+		frm.set_query('item', 'items', () => {
+			return {
+				query: 'rebatems.rebate_management.doctype.rebate_policy.rebate_policy.get_supplier_items',
+				filters: { 'supplier': frm.doc.supplier }
+			};
+		});
 	}
 });

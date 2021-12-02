@@ -10,7 +10,9 @@ from frappe.utils import nowdate, add_days
 class RebatePolicy(Document):
     def validate(self):
         if self.start_date >= self.end_date:
-            frappe.throw(_("The start date cannot be equal to or less than the end date"))
+            frappe.throw(
+                _("The start date cannot be equal to or less than the end date")
+            )
         self.update_totals()
         self.update_status()
 
@@ -257,3 +259,26 @@ def process_promotional_rebate(doc):
 
 def get_sales_for_rebate(doc):
     pass
+
+
+@frappe.whitelist()
+def get_supplier_items(doctype, txt, searchfield, start, page_len, filters):
+    res = []
+    cust_filters = {}
+    if txt:
+        cust_filters["parent"] = ["like", f"%{txt}%"]
+    if filters.get("supplier"):
+        cust_filters["supplier"] = filters.get("supplier")
+    data = frappe.get_list(
+        "Item Supplier",
+        filters=cust_filters,
+        fields=["parent as name"],
+        page_length=page_len,
+        start=start,
+        as_list=True,
+    )
+    for item in data:
+        i = [item[0]]
+        i.append(frappe.get_value("Item", item[0], "item_name"))
+        res.append(i)
+    return res
